@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quiz Test Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="overlay" id="welcome-screen">
+        <div class="modal-card fade-in">
+            <div class="modal-header">
+                <h2>Assalomu aleykum!</h2>
+            </div>
+            <p class="modal-text">Quiz testiga xush kelibsiz — tayyor bo'lsangiz rejimni tanlang.</p>
+            
+            <div class="mode-selection">
+                <button class="mode-btn outline" onclick="startMode('practice')">
+                    <i class="fa-solid fa-book-open"></i>
+                    <div>
+                        <span>Takrorlash</span>
+                        <small>Barcha savollar (ketma-ket)</small>
+                    </div>
+                </button>
+
+                <button class="mode-btn filled" onclick="startMode('exam')">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <div>
+                        <span>Imtihon</span>
+                        <small>30 ta tasodifiy savol</small>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container" id="quiz-app" style="display: none;">
+        
+        <header>
+            <div class="top-bar">
+                <div class="logo">
+                    <h1>Quiz Test</h1>
+                    <span class="badge">PRO</span>
+                </div>
+                <span class="author"><i class="fa-regular fa-user"></i> Og'abek_Narzullayev</span>
+            </div>
+            const allQuestionsData = [
+    { question: "Yarim otkazgichlardan tok utishda kanday zaryadlar ishtirok etmaydi?", options: ["Ionlar", "Elektronlar", "Teshikli zaryadlar (kovaklar)", "Asosiy zaryad tashuvchilar"], correctText: "Ionlar" },
+    { question: "Yarim otkazgichlarda temperatura kutarilganda uning karshiligi uzgaradimi?", options: ["Kamayadi", "Ortadi", "Ozgarmaydi", "Temperaturaga eksponentsial ravishda uzgaradi"], correctText: "Kamayadi" },
+    { question: "Yarim otkazgichlarda elektron otkazuvchanlikni taminlovchi qushimcha nima deb ataladi?", options: ["Aktseptorli aralashma", "Donorli aralashma", "Kovakli aralashma", "Atomli aralashma"], correctText: "Donorli aralashma" },
+    { question: "Bipolyar tranzistorni necha xil usulda sxemaga ulash mumkin?", options: ["3 xil", "4 xil", "2 xil", "6 xil"], correctText: "3 xil" },
+    { question: "Sigimining olchov birligini korsating", options: ["F", "Kl", "A/s", "V/m"], correctText: "F" },
+    { question: "Uzgarmas kuchlanishni aniq chastotadagi uzgaruvchan sinusoidal kuchlanishga aylantiruvchi kurilma nima deb ataladi?", options: ["Invertor", "Togrilagich", "Invertron", "Kuchaytirgich"], correctText: "Invertor" },
+    { question: "Tranzistorli kuchaytirgichlarda chiqish zanjiridagi signal malum qismining kirish zanjiriga uzatilishi nima deb ataladi?", options: ["Teskari boglanish", "Togri boglanish", "Differentsial kuchaytirgich", "Teskari kaskad"], correctText: "Teskari boglanish" },
+    { question: "Donorli kushilma kushilgan yarim otkazgich kanday tipli otkazgich xisoblanadi?", options: ["n-tipli", "p-tipli", "p-n-tipli", "n-p-tipli"], correctText: "n-tipli" },
+    { question: "Yarim otkazgichli diodning togri va teskari ulaganda uning ruxsat etilmaydigan zonasining kengligi bir xilmi?", options: ["Bir xil buladi", "Togri ulaganda katta buladi", "Teskari ulagan kichik buladi", "Teskari ulaganda katta buladi"], correctText: "Bir xil buladi" },
+    { question: "Germaniy bilan mishyak (5 valentli) kotishmasining otkazuvchanligi kanday buladi?", options: ["Elektronli", "Ionli", "Teshikli", "Atomli"], correctText: "Elektronli" },
+    { question: "Nuktali diodning teskari ulashdagi karshiligi Rtesk=5 Mom va teskari ulanishdagi kuchlanish Utes=100 V bulsa, shu rejimdagi tok necha milliamper buladi?", options: ["20*10^-3 mA", "20*10^-23 mA", "20*10^-1 mA", "20 mA"], correctText: "20*10^-3 mA" },
+    { question: "Yassi diodning teskari ulashdagi toki va kuchlanishi tegishlicha Itesk=60 mkA, Utesk=30 V bulsa, teskari ulashdagi krshiligi necha kiloom buladi?", options: ["500 kOm", "50,0 kOm", "5,0 kOm", "0,5 kOm"], correctText: "500 kOm" },
+    { question: "Umumiy emitterli sxemada ulangan tranzismtorning baza toki ΔIb=100 mkA ga uzgarganda kollektor toki ΔIk=4,5 mA ga uzgarsa, tranzistorning tok uzatish koeffitsienti nechaga teng?", options: ["45", "35", "25", "55"], correctText: "45" },
+    { question: "Varikap deb nimani tushunasiz?", options: ["Bu yarim o‘tkazgichli diod bulib, unda p-n utishlar elektr boshkariluvchan sigim sifatida kullaniladi", "Bu ion asbobi bulib, unda p-n utishlar kuchlanishni boshkarish uchun kerak buladi", "Bu yarim otkazgichli asbob bulib, p-n utishlar kuvvatni uzgartirish uchun kullaniladi", "Bu elektron asbob bulib unda p-n utish bolmaydi"], correctText: "Bu yarim o‘tkazgichli diod bulib, unda p-n utishlar elektr boshkariluvchan sigim sifatida kullaniladi" },
+    { question: "Mikrosxema nima?", options: ["Diod, tranzistor, rezistor, induktivlik, kondensator kabi elementlarni maxsus texnologiya asosida plenkada bosilib, uzaro biriktilishida xosil bulgan sxema", "Barcha elektr asboblar yigilgan smexa", "Paralel va ketma-ket ulangan R,L,C elementlar ulangan sxema", "R,L va S elementlari ulangan sxemalar"], correctText: "Diod, tranzistor, rezistor, induktivlik, kondensator kabi elementlarni maxsus texnologiya asosida plenkada bosilib, uzaro biriktilishida xosil bulgan sxema" },
+    { question: "Yarim otkazgichlarda elektr tokini nimalar vujudga keltiradi?", options: ["Elektronlar va kovaklar (teshiklar)", "Zaryadlangan zarrachalar va ionlashgan gazlar", "Atomlar va musbat zaryadlangan yadrolar", "Zaryadlari bir xil bulgan atomlar"], correctText: "Elektronlar va kovaklar (teshiklar)" },
+    { question: "Yarim otkazgich diod nima?", options: ["Diod bitta p-n utishli elementdan tashkil topgan asbobdir", "Diod uchta p-n utishdan tashkil topgan yarim otkazgichli asbobdir", "Diod ikki p-n utishdan tashkil topgan yarim otkazgichdir", "Diod ikkita kristalldan tashkil topgap yarim otkazgich asbobdir"], correctText: "Diod bitta p-n utishli elementdan tashkil topgan asbobdir" },
+    { question: "Togrilovchi diodlarning asosiy vazifasi nimadan iborat?", options: ["Asosan uzgaruvchan tokni uzgarmas tokka aylantirish uchun xizmat kiladi", "Kuvvatni kupaytirsh uchun xizmat kiladi", "Uzgarmas tokni uzgaruvchan tokka aylantirish uchun xizmat kiladi", "Kuvvat koeffitsientini oshirish uchun ishlatiladi"], correctText: "Asosan uzgaruvchan tokni uzgarmas tokka aylantirish uchun xizmat kiladi" },
+    { question: "Bipolyar tranzistor kanaka asbob?", options: ["Ikki p-n utishlardan tashkil topgan yarim otkazgichli asbob", "Bitta p-n utishdan tashkil topgan yarim otkazgichli asbob", "Uchta p-n utishdan tashkil topgan yarim otkazgichli asbob", "Turta p-n utishdan tashkil topgan yarim otkazgichli asbob"], correctText: "Ikki p-n utishlardan tashkil topgan yarim otkazgichli asbob" },
+    { question: "Yarim otkazgichlarda temperatura kotarilganda uning qarshiligi ozgaradimi?", options: ["Kamayadi", "Ortadi", "Ozgarmaydi", "Temperaturaga eksponentsial ravishda uzgaradi"], correctText: "Kamayadi" },
+    { question: "Germaniy bilan mishyak kotishmasining otkazuvchanligi kanday buladi?", options: ["Elektronli", "Ionli", "Musbat", "Atomli"], correctText: "Elektronli" },
+    { question: "O`zining vazifasi va sxemasining tuzilishi jihatidan elektrik filtrlar necha turga bolinadi?", options: ["4", "5", "6", "2"], correctText: "4" },
+    { question: "Kondensator sigimining olchov birligini korsating", options: ["F", "Kl", "A/s", "V/m"], correctText: "F" },
+    { question: "Quyidagi olchov asboblaridan qaysi birining yordamida elektr tokining quvvati olchanadi", options: ["Vattmetr", "Ampermetr", "Fazometr", "Chastotomer"], correctText: "Vattmetr" },
+    { question: "Lampali triod nima?", options: ["anod, katod va tordan iborat uch elektronli", "qoshma anodli diod", "qoshma katodli diod", "uchta chiqish qismasi bolgan lampa"], correctText: "anod, katod va tordan iborat uch elektronli" },
+    { question: "Zanjirdagi tok va kuchlanish ozaro qanday nisbatda boglanganligini ifodalaydigan qonun bu", options: ["Om qonuni", "Kulon qonuni", "Nyuton qonuni", "Djoul-Lens qonuni"], correctText: "Om qonuni" },
+    { question: "Quyidagi olchov asboblaridan qaysi birining yordamida elektr tokining kuchi olchanadi", options: ["Ampermetr", "Ossillograf", "Fazometr", "Voltmetr"], correctText: "Ampermetr" },
+    { question: "Agar zanjirdan otayotgan tokning yonalishi va qiymati vaqt davomida ozgarmas bolsa, bunday tok", options: ["Ozgarmas tok deyiladi", "Ozgaruvchan tok deyiladi", "Aktiv tok deyiladi", "Reaktiv tok deyiladi"], correctText: "Ozgarmas tok deyiladi" },
+    { question: "Quyidagi olchov asboblaridan qaysi birining yordamida qarshilik olchanadi", options: ["Ommetr", "Voltmetr", "Ampermetr", "Induksion hisoblagich"], correctText: "Ommetr" },
+    { question: "Quyidagi olchov asboblaridan qaysi birining yordamida tok chastotasi olchanadi", options: ["Chastotometr", "Vattmetr", "Ampermetr", "Ommetr"], correctText: "Chastotometr" },
+    { question: "Elektr zaryadini olchov birligini korsating", options: ["Kl", "G", "A/s", "V/m"], correctText: "Kl" },
+    { question: "Elektr zanjiriga ampermetr qanday ulanishi kerak", options: ["Yuklama qarshiligiga ketma-ket", "Qarama-qarshi", "Yuklama qarshiligiga shuntlanadi", "Yuklama qarshiligiga parallel"], correctText: "Yuklama qarshiligiga ketma-ket" },
+    { question: "Elektr zanjiriga voltmetr qanday ulanishi kerak", options: ["Yuklama qarshiligiga parallel", "Yuklama qarshiligiga ketma-ket", "Qarama-qarshi", "Yuklama qarshiligiga shuntlanadi"], correctText: "Yuklama qarshiligiga parallel" },
+    { question: "Kondensator parallel ulanganda=const", options: ["Kuchlanish", "Qarshilik", "Sigim", "Zaryad"], correctText: "Kuchlanish" },
+    { question: "Kuchaytirgichning vazifasi", options: ["Signal quvvatini oshirishdan iborat", "Qarshilikni oshirishdan iborat", "Kuchlanishni oshirishdan iborat", "Tokni oshirishdan iborat"], correctText: "Signal quvvatini oshirishdan iborat" },
+    { question: "Stabilizatorlarning asosiy parametrlariga nimalar kiradi?", options: ["stabilizatsiyalash koeffitsienti va uning chiqish qarshiligi", "induktiv va sigim qarshilik", "davr va chastota", "amplituda"], correctText: "stabilizatsiyalash koeffitsienti va uning chiqish qarshiligi" },
+    { question: "Uch elektrodli elektron lampa", options: ["triod", "tiristor", "diod", "tranzistor"], correctText: "triod" },
+    { question: "Ikki elektron kovak otishli, uch qatlamli yarim otkazgich asbob", options: ["tranzistor", "diod", "triod", "tiristor"], correctText: "tranzistor" },
+    { question: "Ikki qutbli tranzistor bu", options: ["Bipolyar tranzistor", "Unipolyar tranzistor", "Maydonli ranzistor", "triod"], correctText: "Bipolyar tranzistor" },
+    { question: "Anod va katoddan tashqari boshqaruvshi torga ega bolgan uch elektrodli ionli asbob", options: ["triod", "tiristor", "tiratron", "tranzistor"], correctText: "tiratron" },
+    { question: "Tort qatlamli uch P-n otishli yarim otkazgich asbob", options: ["tiristor", "triod", "tiratron", "tranzistor"], correctText: "tiristor" },
+    { question: "Avtomatik boshqarish sistemalari,radiotexnika va boshqa sistemalarda kichik quvvatli signallarni kuchaytirish uchun foydalaniladigan asbob bu", options: ["kuchaytirgich", "inventor", "konventor", "tiratron"], correctText: "kuchaytirgich" },
+    { question: "Tiristorlarda nechta p-n otish mavjud?", options: ["3 ta", "1 ta", "2 ta", "4 ta"], correctText: "3 ta" },
+    { question: "O`zgaruvchan tokni kim yaratgan?", options: ["N Tesla", "T Edison", "G Gerts", "I Nyuton"], correctText: "N Tesla" },
+    { question: "Yarim otkazgichning aralashmalari nechi xil boladi?", options: ["2 xil aralashma", "4 xil aralashma", "3xil aralashma", "7xil aralashma"], correctText: "2 xil aralashma" },
+    { question: "Rezistor ozgartirilishiga qarab nechi xil boladi.", options: ["2 xil Ozgaruvchan va ozgarmas", "1 xil Ozgaruvchan", "1 xil Ozgarmas", "1 xil Turgun"], correctText: "2 xil Ozgaruvchan va ozgarmas" },
+    { question: "Kondensator ozgartirilishiga qarab nechi xil boladi.", options: ["2 xil Ozgaruvchan va ozgarmas", "1 xil Ozgaruvchan", "1 xil Ozgarmas", "1 xil Turgun"], correctText: "2 xil Ozgaruvchan va ozgarmas" },
+    { question: "Togrilagich diod nima vazifani bajaradi.", options: ["Ozgaruvchan tokni ozgarmas qilib beradi.", "Ozgarmas tokni ozgaruvchan qilib beradi.", "Qarshilikni togrilab beradi.", "Sigimni togrilab beradi."], correctText: "Ozgaruvchan tokni ozgarmas qilib beradi." },
+    { question: "Transiztor nechi xil turi mavjud.", options: ["2 xil Bipolyar va unipolyar tranzistorlar", "1 xil Bipolyar tranzistor", "1 xil Unipolyar tranzistor", "1 xil Maydoniy transistor"], correctText: "2 xil Bipolyar va unipolyar tranzistorlar" },
+    { question: "Bipolyar tranzistorning sohalari nomlanishi.", options: ["Baza, kolektor, emitter", "Baza kolektor, zatvor", "Zatvor, istok, stok", "Zatvor, istok, baza"], correctText: "Baza, kolektor, emitter" },
+    { question: "Unipolyar tranzistorning sohalari nomlanishi.", options: ["Zatvor, istok, stok", "Baza, kolektor, emitter", "Baza kolektor, zatvor", "Zatvor, istok, baza"], correctText: "Zatvor, istok, stok" },
+    { question: "Tranzistorning umiy baza ulanish deb nimaga aytiladi.", options: ["Tranzistorning baza sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi.", "Tranzistorning kolektor sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi.", "Tranzistorning emittor sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi.", "Tranzistorning baza, kolektor, emittor sohalari zanjirning kirish va chiqishiga ulanishiga aytiladi."], correctText: "Tranzistorning baza sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi." },
+    { question: "Tranzistorning umiy kolektor ulanish deb nimaga aytiladi.", options: ["Tranzistorning kolektor sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi.", "Tranzistorning baza sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi.", "Tranzistorning emittor sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi.", "Tranzistorning baza, kolektor, emittor sohalari zanjirning kirish va chiqishiga ulanishiga aytiladi."], correctText: "Tranzistorning kolektor sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi." },
+    { question: "Tranzistorning umiy emittor ulanish deb nimaga aytiladi.", options: ["Tranzistorning emittor sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi.", "Tranzistorning kolektor sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi.", "Tranzistorning baza sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi.", "Tranzistorning baza, kolektor, emittor sohalari zanjirning kirish va chiqishiga ulanishiga aytiladi."], correctText: "Tranzistorning emittor sohasi zanjirning kirish va chiqishiga ulanishiga aytiladi." },
+    { question: "Kuchaytirgichning K parametri nimani ifodalaydi.", options: ["Kuchaytirish koefisentini", "Tranformasiya koefisentini", "Yuqotish koefisentini", "Turgunlik koefisentini"], correctText: "Kuchaytirish koefisentini" },
+    { question: "Tranzistor nechi xil rejimi bor", options: ["2 xil kalit va signalni kuchaytirish", "2 xil kalit va signalni chastotasini kuchaytirish", "1 xil kalit", "1 xil signalni chastotasini kuchaytirish"], correctText: "2 xil kalit va signalni kuchaytirish" },
+    { question: "Filtrning fazifasi nima.", options: ["Signalni xalaqitlardan tozalaydi", "Signalni begona chastotasini kuchaytiradi", "Signalni kuchlanishdan tozalaydi", "Signalni kirlardan tozalaydi"], correctText: "Signalni xalaqitlardan tozalaydi" },
+    { question: "Elektr signal deb nimaga aytiladi", options: ["Axborotni ifodalovchi elektr toki", "Tovush signalini ifodalovchi elektr chastota", "Faqat raqamli axborotni ifodalovchi elektr toki", "Faqat analogli axborotni ifodalovchi elektr toki"], correctText: "Axborotni ifodalovchi elektr toki" },
+    { question: "Operratsion ikkita kirishga ega.", options: ["Inverslaydigan va Inverslanmaydigan", "Invertorli va Invertorsiz", "Inverslanmaydigan va invertorli", "Inverslaydigan va invertorli"], correctText: "Inverslaydigan va Inverslanmaydigan" },
+    { question: "Nol va bir raqamlardan iborat signal turi.", options: ["Raqamli", "Analogli", "Sinusoidal", "Togri javob yoq"], correctText: "Raqamli" },
+    { question: "Analogli signal shakli. boladi.", options: ["Sinusoidal", "Cosinusoidal", "Totburchak", "Uchburchak"], correctText: "Sinusoidal" },
+    { question: "Tok kuchini javoblar ichidan eng kichigini toping", options: ["mA", "A", "MA", "KA"], correctText: "mA" },
+    { question: "Sigimni javoblar ichidan eng kichigini toping", options: ["MkF", "F", "KF", "MlF"], correctText: "MkF" },
+    { question: "Signalni analogdan raqamliga ozgartirsa boladimi.", options: ["Ha boladi", "Yuq bolmaydi", "Qisman boladi", "Signalning vaqt doimiyligiga qarab"], correctText: "Ha boladi" },
+    { question: "Signalni raqamlidan analogga ozgartirsa boladimi.", options: ["Ha boladi", "Yuq bolmaydi", "Qisman boladi", "Signalning vaqt doimiyligiga qarab"], correctText: "Ha boladi" },
+    { question: "Diod va tranzistorning korinishidan nimasi bilan farqlanadi", options: ["Diodda ikkita tranzistorda uchta soha mavjudligidan", "Diodda ikkita tranzistorda tortta soha mavjudligidan", "Diodda va transistor korinishidan farq qilmaydi", "Diodni tranzistordan sohalari kopligi bilan farqlanadi"], correctText: "Diodda ikkita tranzistorda uchta soha mavjudligidan" },
+    { question: "Diod va tristorning korinishidan nimasi bilan farqlanadi", options: ["Diodda ikkita tristorda uchta soha mavjudligidan", "Diodda ikkita tristorda tortta soha mavjudligidan", "Diodda va tristor korinishidan farq qilmaydi", "Diodni tranzistordan sohalari kopligi bilan farqlanadi"], correctText: "Diodda ikkita tristorda uchta soha mavjudligidan" },
+    { question: "Teristorda nechta qatlam mavjud", options: ["4ta", "3ta", "2ta", "5ta"], correctText: "4ta" },
+    { question: "Tranzistorda nechta qatlam mavjud", options: ["3ta", "4ta", "2ta", "5ta"], correctText: "3ta" },
+    { question: "Odatda Ozbekistonda tarmoqdagi tokning chastotasi nechi Gts.", options: ["50Gts", "60Gts", "30Gts", "Aniq emas"], correctText: "50Gts" },
+    { question: "Ozgaruvchan va ozgarmas tokning eng asosiy parametrining farqi.", options: ["Ozgaruvchan tokga chastota parametri boladi va ozgarmas chastota parametri bolmaydi", "Ozgarmas tokga chastota parametri boladi va ozgaruvchan chastota parametri bolmaydi", "Ozgarmas tokga tok zichligi parametri boladi va ozgaruvchan tok zichligi parametri bolmaydi", "Ozgaruvchan tokga tok zichligi parametri boladi va ozgarmas tok zichligi parametri bolmaydi"], correctText: "Ozgaruvchan tokga chastota parametri boladi va ozgarmas chastota parametri bolmaydi" },
+    { question: "Nurlovchi va foto diodning farqi", options: ["Nurlovchi diod elektr energiyasini yoruglik energiyasiga aylantiradi foto diod esa yoruglik energiyasini elektr energiyasiga aylantiradi", "Nurlovchi diod yoruglik energiyasini elektr energiyasiga aylantiradi foto diod esa elektr energiyasini yoruglik energiyasiga aylantiradi", "Bir birdan farq qilmaydi", "Nurlovchi diod lazer energiyasini elektr energiyasiga aylantiradi foto diod esa elektr energiyasini yoruglik energiyasiga aylantiradi"], correctText: "Nurlovchi diod elektr energiyasini yoruglik energiyasiga aylantiradi foto diod esa yoruglik energiyasini elektr energiyasiga aylantiradi" },
+    { question: "Mantiqiy inkor amali", options: ["YOQ- mantiqiy elementi - invertor", "VA mantiqiy elementi - konyuktor", "YoKI-mantiqiy elementi - dizyunksiya", "Togri javob yoq"], correctText: "YOQ- mantiqiy elementi - invertor" },
+    { question: "Mantiqiy kopaytirish amali", options: ["VA mantiqiy elementi - konyuktor", "YOQ- mantiqiy elementi - invertor", "YoKI-mantiqiy elementi - dizyunksiya", "Togri javob yoq"], correctText: "VA mantiqiy elementi - konyuktor" },
+    { question: "Mantiqiy qoshish amali", options: ["YoKI-mantiqiy elementi - dizyunksiya", "VA mantiqiy elementi - konyuktor", "YOQ- mantiqiy elementi - invertor", "Togri javob yoq"], correctText: "YoKI-mantiqiy elementi - dizyunksiya" },
+    { question: "Shifratorni vazifasi nima", options: ["Shifrator (CD- coder) - kirish yolidagi birlik signalni n razryadli ikkilik kodga aylantiradigan EHM ning aniq uzelidir", "Shifrator (CD- coder) - kirish yolidagi ikkilik signalni n razryadli birlik kodga aylantiradigan EHM ning aniq uzelidir", "Shifrator (CD- coder) - kirish yolidagi birlik signalni n razryadli onlik kodga aylantiradigan EHM ning aniq uzelidir", "Togri javob yoq"], correctText: "Shifrator (CD- coder) - kirish yolidagi birlik signalni n razryadli ikkilik kodga aylantiradigan EHM ning aniq uzelidir" },
+    { question: "Deshifrator vazifasi nima", options: ["Deshifrator (DC(decoder) - kirish yolidagi ikkilik kodni n razryadli onlikga aylantiradigan EHM ning aniq uzelidir", "Deshifrator (DC(decoder) - kirish yolidagi ikkilik signalni n razryadli birlik kodga aylantiradigan EHM ning aniq uzelidir", "Deshifrator (DC(decoder) - kirish yolidagi birlik signalni n razryadli onlik kodga aylantiradigan EHM ning aniq uzelidir", "Togri javob yoq"], correctText: "Deshifrator (DC(decoder) - kirish yolidagi ikkilik kodni n razryadli onlikga aylantiradigan EHM ning aniq uzelidir" },
+    { question: "Multipleksor vazifasi nima", options: ["Multipleksor EHMning uzeli bolib, parallel raqamli kodlarni ketma-ket kodlarga aylantirish uchun xizmat qiladi", "Multipleksor EHMning uzeli bolib, ketma-ket raqamli kodlarni parallel kodlarga aylantirish uchun xizmat qiladi", "Multipleksor EHMning uzeli bolib, parallel raqamli kodlarni ketma-ket va parallel kodlarga aylantirish uchun xizmat qiladi", "Multipleksor EHMning uzeli bolib, ketma-ket raqamli kodlarni ketma-ket va parallel kodlarga aylantirish uchun xizmat qiladi"], correctText: "Multipleksor EHMning uzeli bolib, parallel raqamli kodlarni ketma-ket kodlarga aylantirish uchun xizmat qiladi" },
+    { question: "Demultipleksorlar vazifasi nima", options: ["Demultipleksorlar EHMning uzeli bolib, ketma-ket raqamli kodlarni parallel kodlarga aylantirish uchun xizmat qiladi", "Demultipleksorlar EHMning uzeli bolib, parallel raqamli kodlarni ketma-ket kodlarga aylantirish uchun xizmat qiladi", "Demultipleksorlar EHMning uzeli bolib, parallel raqamli kodlarni ketma-ket va parallel kodlarga aylantirish uchun xizmat qiladi", "Demultipleksorlar EHMning uzeli bolib, ketma-ket raqamli kodlarni ketma-ket va parallel kodlarga aylantirish uchun xizmat qiladi"], correctText: "Demultipleksorlar EHMning uzeli bolib, ketma-ket raqamli kodlarni parallel kodlarga aylantirish uchun xizmat qiladi" },
+    { question: "Summatorlar vazifasi nima", options: ["Ikki son xonalarini jamlash amalini bajaruvchi EHM uzelidir", "Onlik son xonalarini jamlash amalini bajaruvchi EHM uzelidir", "Ikki va onlik son xonalarini jamlash amalini bajaruvchi EHM uzelidir", "Togri javob yoq"], correctText: "Ikki son xonalarini jamlash amalini bajaruvchi EHM uzelidir" },
+    { question: "Triggerlarni turlari korsating", options: ["RS, T, D, JK", "AS, T, D, JK", "Faqat TT", "Togri javob yoq"], correctText: "RS, T, D, JK" },
+    { question: "Qaysi triggerga boshqaruv C-ga ega", options: ["Sinxron trigger", "Acinxron trigger", "Sinxron va acinxron trigger", "Togri javob yoq"], correctText: "Sinxron trigger" },
+    { question: "Registrlar qaysi mantiqiy qurimalardan hosil qilinadi", options: ["Trigger", "shifratordan", "Multpleksordan", "Shifratordan, Trigger va Multpleksordan"], correctText: "Trigger" },
+    { question: "Hisoblagich vazifasi nima", options: ["Hisoblagichlar- ketma-ket qurilma bolib, kirish yoliga berilgan impulslar sonini hisoblash va saqlash uchun xizmat qiladi.", "Ikkita teng kuchli, alternativ turgun holatga ega bolgan (0 yoki 1) va axborotlarni qoshish uchun xizmat qiladigan EHM uzelidir", "Onlik son xonalarini jamlash amalini bajaruvchi EHM uzelidir", "Ikki son xonalarini jamlash amalini bajaruvchi EHM uzelidir"], correctText: "Hisoblagichlar- ketma-ket qurilma bolib, kirish yoliga berilgan impulslar sonini hisoblash va saqlash uchun xizmat qiladi." },
+    { question: "Xotira elementlari tiplari boyicha togri korsatilgan qatorni korsating", options: ["Yarim otkazgichli, Magnitli, Kondensatorli, Optoelektronli, Golografli, Kriogenli", "Faqat Yarim o‘tkazgichli", "Faqat Magnitli, Kondensatorli", "To‘g‘ri javob yo‘q"], correctText: "Yarim otkazgichli, Magnitli, Kondensatorli, Optoelektronli, Golografli, Kriogenli" },
+    { question: "Generator nechta asosiy qimdan iborat", options: ["2", "3", "6", "8"], correctText: "2" },
+    { question: "D-triggerlar manosi nima", options: ["Ing Delay-ushlash kechikish", "Rus держать-ushlab turish", "Lotin Densi-qotrish", "Hammasi to‘g‘ri"], correctText: "Ing Delay-ushlash kechikish" },
+    { question: "JK-triggerning xususyati nima", options: ["D,T,RS-triggerlar sifatida ishlashi va ularning fuksyalarni bajarishi mumkin", "I,Ta,RSY-triggerlar sifatida ishlashi va ularning fuksyalarni bajarishi mumkin", "D,T,RS-triggerlar sifatida ularning fuksyalarni bajarishi mumkin bolmagan", "D,T,JK-triggerlar sifatida ishlashi va ularning fuksyalarni bajarishi mumkin"], correctText: "D,T,RS-triggerlar sifatida ishlashi va ularning fuksyalarni bajarishi mumkin" },
+    { question: "Sinxron triggerning aniq turini aniqlang", options: ["Statik boshqaruvli sinxron trigger", "Aktiv tenglamali sinxron trigger", "Mantiqiy elementli sinxron trigger", "Togri kirishli sinxron trigger"], correctText: "Statik boshqaruvli sinxron trigger" },
+    { question: "Xotira axborotni ..saqlaydi", options: ["Ikkilik kodida", "On oltilik kodida", "Ettilik kodida", "Hohlagan kodda"], correctText: "Ikkilik kodida" },
+    { question: "1 bit malumotni saqlaydigan, xotira elementi qanday nomlanadi", options: ["trigger", "registr", "deshifrator", "Barcha javoblar togri"], correctText: "trigger" },
+    { question: "Malumotlarni ketma-ket chiqaruvchi 4 razryadli registr uchun nechta takt impulslarini ishlatish lozimdir", options: ["4", "8", "16", "1"], correctText: "4" },
+    { question: "Malumotlarni ketma-ket qabul kiluvchi 8 razryadli registrni qurish uchun nechta trigger zarur boladi", options: ["8", "3", "4", "1"], correctText: "8" },
+    { question: "Bir bayt kopincha razryad setkasining qiymatiga tengdir", options: ["8 bit", "7 bit", "10 bit", "5 bit"], correctText: "8 bit" },
+    { question: "Qanday qurilma bir signalni n-razryadli ikkilik kodga otkazib beradi", options: ["Shifrator", "Multipleksor", "Deshifrator", "Summator"], correctText: "Shifrator" },
+    { question: "Sxemalarda bipolyar tranzistor... ishlatiladi.", options: ["signallarni quvvatini kuchaytirish uchun", "signallarni kechiktirish uchun", "signallarni sondirish uchun", "signallarni ajratish uchun"], correctText: "signallarni quvvatini kuchaytirish uchun" },
+    { question: "Termorezistor", options: ["termoelektrik asbob", "elektr ozgartiruvchi asbob", "elektr yoritgich asbob", "fotoelektrik asbob"], correctText: "termoelektrik asbob" },
+    { question: "..... termorezistor toki qiymati ozgaradi", options: ["atrof muxit temperaturasi ozgarishi bilan", "atrof muxit temperaturasi ortishi bilan", "atrof muxit temperaturasi kamayishi bilan", "yoritilganlik ozgarishi bilan"], correctText: "atrof muxit temperaturasi ozgarishi bilan" },
+    { question: "Fotodiod", options: ["fotoelektrik asbob", "termoelektrik asbob", "elektr ozgartiruvchi asbob", "elektr yoritgich asbob"], correctText: "fotoelektrik asbob" },
+    { question: "Fotodiod ... ishlatiladi.", options: ["optik signallarni elektr signallarga aylantirish uchun", "elektr signallarni optik signallarga aylantirish uchun", "issiqlik signallarni elektr signallarga aylantirish uchun", "elektr signallarni elektr signallarga aylantirish uchun"], correctText: "optik signallarni elektr signallarga aylantirish uchun" }
+];
+            <div class="info-bar">
+                <div class="info-item active">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span id="mode-name">Yuklanmoqda...</span>
+                </div>
+                <div class="info-item" onclick="location.reload()" style="cursor: pointer;">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Qayta yuklash</span>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-label">
+                    <span id="current-status">1 / 30</span>
+                    <span id="score-status">0 to'g'ri</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="question-card slide-up">
+                <h3 id="question-text">Savol yuklanmoqda...</h3>
+                <div id="options-list" class="options-container">
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="overlay" id="result-screen" style="display: none;">
+        <div class="modal-card scale-up">
+            <div class="result-icon">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h2>Natijalar</h2>
+            <div class="score-circle">
+                <span id="final-score">0</span>
+                <small id="total-count">/ 30</small>
+            </div>
+            <p id="result-message">Yaxshi natija!</p>
+            
+            <button class="mode-btn filled full-width" onclick="location.reload()">
+                <i class="fa-solid fa-rotate"></i> Qayta boshlash
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
